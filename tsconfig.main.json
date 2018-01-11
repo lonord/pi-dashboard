@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./lib/main",
+    "rootDir": "./src/main",
+    "removeComments": true,
+    "inlineSourceMap": true
+  },
+  "include": [
+    "./src/main/**/*"
+  ]
+}

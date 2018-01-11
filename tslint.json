@@ -4,7 +4,6 @@
 		"tslint-react"
 	],
 	"rules": {
-		// override tslint-react rules here
 		"jsx-wrap-multiline": false,
 		"semicolon": [
 			true,
@@ -50,6 +49,8 @@
 		"align": [
 			"statements"
 		],
-		"arrow-parens": false
+		"arrow-parens": false,
+		"no-implicit-dependencies": false,
+		"no-duplicate-imports": false
 	}
 }

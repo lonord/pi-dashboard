@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./lib/renderer",
+    "rootDir": "./src/renderer",
+    "removeComments": true,
+    "inlineSourceMap": true
+  },
+  "include": [
+    "./src/renderer/**/*"
+  ]
+}
