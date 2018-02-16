@@ -4,7 +4,9 @@
   "description": "Dashboard powered by electron designed for raspberry pi",
   "main": "lib/main/index.js",
   "scripts": {
-    "clean": "rm -rf lib/"
+    "clean": "rm -rf lib/",
+    "dev": "electron .",
+    "build": "tsc -p tsconfig.renderer.json && tsc -p tsconfig.main.json"
   },
   "repository": {
     "type": "git",
@@ -23,5 +25,8 @@
     "tslint-react": "^3.2.0",
     "typescript": "^2.6.2",
     "webpack": "^3.9.1"
+  },
+  "dependencies": {
+    "electron-is-dev": "^0.3.0"
   }
 }

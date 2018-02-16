@@ -4,21 +4,9 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "build main",
+			"label": "build",
 			"type": "typescript",
 			"tsconfig": "tsconfig.main.json",
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
-		},
-		{
-			"label": "build renderer",
-			"type": "typescript",
-			"tsconfig": "tsconfig.renderer.json",
 			"problemMatcher": [
 				"$tsc"
 			],
