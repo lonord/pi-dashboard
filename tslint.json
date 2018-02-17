@@ -33,11 +33,11 @@
 		"jsx-no-lambda": false,
 		"no-unused-expression": [
 			true,
-			"allow-fast-null-checks"
+			"allow-fast-null-checks",
+			"allow-tagged-template"
 		],
 		"variable-name": [
-			true,
-			"allow-leading-underscore"
+			false
 		],
 		"no-shadowed-variable": false,
 		"max-classes-per-file": [false],

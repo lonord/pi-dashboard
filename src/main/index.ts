@@ -1,5 +1,6 @@
 import * as electron from 'electron'
 import { app, BrowserWindow } from 'electron'
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import * as isDev from 'electron-is-dev'
 import * as path from 'path'
 import * as url from 'url'
@@ -16,8 +17,7 @@ function createWindow() {
 		minHeight: 600,
 
 		title: 'Pi Dashboard',
-		frame: false,
-		titleBarStyle: 'hiddenInset'
+		frame: false
 	})
 
 	// and load the index.html of the app.
@@ -42,7 +42,10 @@ function createWindow() {
 app.on('ready', () => {
 	if (isDev) {
 		console.log('> electron is in dev mode')
-		rendererDebug(createWindow)
+		installExtension(REACT_DEVELOPER_TOOLS)
+			.then((name) => console.log(`Added Extension:  ${name}`))
+			.catch((err) => console.log('An error occurred: ', err))
+		rendererDebug(createWindow, () => mainWindow && mainWindow.reload())
 	} else {
 		createWindow()
 	}

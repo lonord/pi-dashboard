@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 
-export default (onBuildSuccess: () => void) => {
+export default (onBuildSuccess: () => void, onUpdate?: () => void) => {
 	const child = spawn('./node_modules/.bin/tsc', ['-w', '-p', 'tsconfig.renderer.json'])
 	let buildSuccess = false
 	child.stdout.on('data', (msg) => {
@@ -8,6 +8,8 @@ export default (onBuildSuccess: () => void) => {
 		if (!buildSuccess) {
 			buildSuccess = true
 			onBuildSuccess()
+		} else {
+			onUpdate && onUpdate()
 		}
 	})
 	child.stderr.on('data', (msg) => {

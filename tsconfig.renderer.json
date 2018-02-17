@@ -2,10 +2,14 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
+    "jsx": "react",
     "outDir": "./lib/renderer",
     "rootDir": "./src/renderer",
     "removeComments": true,
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "plugins": [{
+      "name": "typescript-styled-plugin"
+    }]
   },
   "include": [
     "./src/renderer/**/*"

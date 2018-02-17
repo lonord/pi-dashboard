@@ -4,9 +4,9 @@
   "description": "Dashboard powered by electron designed for raspberry pi",
   "main": "lib/main/index.js",
   "scripts": {
-    "clean": "rm -rf lib/",
+    "clean": "rimraf lib/",
     "dev": "electron .",
-    "build": "tsc -p tsconfig.renderer.json && tsc -p tsconfig.main.json"
+    "build": "npm run clean && tsc -p tsconfig.renderer.json && tsc -p tsconfig.main.json"
   },
   "repository": {
     "type": "git",
@@ -20,13 +20,20 @@
   "author": "Loy B. <lonord@qq.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/react": "^16.0.38",
     "electron": "^1.7.9",
+    "electron-devtools-installer": "^2.2.3",
+    "rimraf": "^2.6.2",
     "tslint": "^5.8.0",
     "tslint-react": "^3.2.0",
     "typescript": "^2.6.2",
+    "typescript-styled-plugin": "^0.6.0",
     "webpack": "^3.9.1"
   },
   "dependencies": {
-    "electron-is-dev": "^0.3.0"
+    "electron-is-dev": "^0.3.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "styled-components": "^3.1.6"
   }
 }
