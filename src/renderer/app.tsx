@@ -1,5 +1,6 @@
 import * as React from 'react'
 import styled, { injectGlobal } from 'styled-components'
+import DateTime from './components/datetime'
 import Logo from './components/logo'
 import Toolbar from './components/toolbar'
 import Content from './layouts/content'
@@ -37,8 +38,9 @@ const Text = styled.div`
 export default () => (
 	<Main>
 		<Header>
-			<Logo/>
-			<Toolbar/>
+			<Logo />
+			<DateTime />
+			<Toolbar />
 		</Header>
 		<Content>
 			content

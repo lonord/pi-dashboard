@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { FlexItemFix, withFlexHorizentalCenter } from './flex'
+import { FlexItemFix, withFlexHorizental, withFlexItemsCenter } from './flex'
 
-export default withFlexHorizentalCenter(FlexItemFix).extend`
+export default withFlexItemsCenter(withFlexHorizental(FlexItemFix.extend`
 	height: 40px;
-`
+`))

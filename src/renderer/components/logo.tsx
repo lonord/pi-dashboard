@@ -1,13 +1,13 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { FlexItemAdaptive, withFlexHorizentalCenter, withItemFix } from '../layouts/flex'
+import { FlexItemAdaptive, withFlexHorizental, withFlexItemsCenter, withItemFix } from '../layouts/flex'
 
-const LogoWrap = withFlexHorizentalCenter(styled(FlexItemAdaptive)`
+const LogoWrap = withFlexItemsCenter(withFlexHorizental(styled(FlexItemAdaptive)`
 	-webkit-user-select: none;
 	-webkit-app-region: drag;
 	cursor: move;
 	height: 100%;
-`)
+`))
 const LogoImage = styled.img`
 	height: 30px;
 	padding: 0 10px 0;

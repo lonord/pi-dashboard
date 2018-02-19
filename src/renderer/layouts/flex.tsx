@@ -35,9 +35,8 @@ export function withFlexHorizental<P>(Comp: React.ComponentType<P>) {
 	`
 }
 
-export function withFlexHorizentalCenter<P>(Comp: React.ComponentType<P>) {
-	const Comp2 = withFlexHorizental(Comp)
-	return styled(Comp2) `
+export function withFlexItemsCenter<P>(Comp: React.ComponentType<P>) {
+	return styled(Comp) `
 		align-items: center;
 	`
 }
