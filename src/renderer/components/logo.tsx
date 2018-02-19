@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { FlexItemAdaptive, withFlexHorizental, withFlexItemsCenter, withItemFix } from '../layouts/flex'
 
 const LogoWrap = withFlexItemsCenter(withFlexHorizental(styled(FlexItemAdaptive)`
-	-webkit-user-select: none;
 	-webkit-app-region: drag;
 	cursor: move;
 	height: 100%;
@@ -21,7 +20,7 @@ const LogoText = styled.span`
 
 export default () => (
 	<LogoWrap>
-		<LogoImageFixItem src="resource/pi.png"/>
+		<LogoImageFixItem src="resource/image/pi.png"/>
 		<LogoText>PI DASHBOARD</LogoText>
 	</LogoWrap>
 )
