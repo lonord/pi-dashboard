@@ -1,5 +1,5 @@
+import { FlexItemFix } from '@lonord/react-electron-components'
 import * as React from 'react'
-import { FlexItemFix } from '../layouts/flex'
 
 export default () => (
 	<FlexItemFix>

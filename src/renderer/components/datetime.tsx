@@ -1,6 +1,6 @@
+import { FlexItemFix } from '@lonord/react-electron-components'
 import * as fecha from 'fecha'
 import * as React from 'react'
-import { FlexItemFix } from '../layouts/flex'
 
 const DateTimeText = FlexItemFix.extend`
 	padding: 0 40px 0 0;

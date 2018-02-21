@@ -1,11 +1,12 @@
+import createTsCompiler from '@lonord/electron-renderer-ts-compiler'
 import * as electron from 'electron'
 import { app, BrowserWindow } from 'electron'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import * as isDev from 'electron-is-dev'
 import * as path from 'path'
 import * as url from 'url'
-import rendererDebug from './renderer-debugger'
 
+const tsCompiler = createTsCompiler()
 let mainWindow: BrowserWindow
 
 function createWindow() {
@@ -45,7 +46,7 @@ app.on('ready', () => {
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name) => console.log(`Added Extension:  ${name}`))
 			.catch((err) => console.log('An error occurred: ', err))
-		rendererDebug(createWindow, () => mainWindow && mainWindow.reload())
+		tsCompiler(createWindow, () => mainWindow && mainWindow.reload())
 	} else {
 		createWindow()
 	}

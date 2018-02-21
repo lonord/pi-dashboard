@@ -32,10 +32,6 @@ injectGlobal`
 	}
 `
 
-const Text = styled.div`
-	color: blue;
-`
-
 export default () => (
 	<Main>
 		<Header>

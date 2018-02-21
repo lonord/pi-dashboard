@@ -1,6 +1,11 @@
+import {
+	FlexItemAdaptive,
+	withFlexHorizental,
+	withFlexItemsCenter,
+	withItemFix
+} from '@lonord/react-electron-components'
 import * as React from 'react'
 import styled from 'styled-components'
-import { FlexItemAdaptive, withFlexHorizental, withFlexItemsCenter, withItemFix } from '../layouts/flex'
 
 const LogoWrap = withFlexItemsCenter(withFlexHorizental(styled(FlexItemAdaptive)`
 	-webkit-app-region: drag;
