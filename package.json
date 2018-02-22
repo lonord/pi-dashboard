@@ -22,7 +22,7 @@
   "devDependencies": {
     "@lonord/electron-renderer-ts-compiler": "^1.1.2",
     "@types/react": "^16.0.38",
-    "electron": "^1.7.9",
+    "electron": "^1.8.2",
     "electron-devtools-installer": "^2.2.3",
     "rimraf": "^2.6.2",
     "tslint": "^5.8.0",
