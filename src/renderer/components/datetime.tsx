@@ -4,10 +4,8 @@ import * as React from 'react'
 
 const DateTimeText = FlexItemFix.extend`
 	padding: 0 40px 0 0;
-	font-family: monospace;
+	font-family: Menlo, monospace;
 	font-size: 16px;
-	font-weight: bold;
-	color: #666;
 	height: 18px;
 	line-height: 20px;
 `

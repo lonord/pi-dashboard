@@ -1,13 +1,13 @@
 import {
 	FlexItemAdaptive,
+	withFlexAlignItemsCenter,
 	withFlexHorizental,
-	withFlexItemsCenter,
 	withItemFix
 } from '@lonord/react-electron-components'
 import * as React from 'react'
 import styled from 'styled-components'
 
-const LogoWrap = withFlexItemsCenter(withFlexHorizental(styled(FlexItemAdaptive)`
+const LogoWrap = withFlexAlignItemsCenter(withFlexHorizental(styled(FlexItemAdaptive)`
 	-webkit-app-region: drag;
 	cursor: move;
 	height: 100%;
