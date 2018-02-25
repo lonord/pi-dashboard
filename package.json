@@ -21,7 +21,9 @@
   "license": "MIT",
   "devDependencies": {
     "@lonord/electron-renderer-ts-compiler": "^1.1.4",
+    "@types/mkdirp": "^0.5.2",
     "@types/react": "^16.0.38",
+    "@types/yamljs": "^0.2.30",
     "electron": "^1.8.2",
     "electron-devtools-installer": "^2.2.3",
     "rimraf": "^2.6.2",
@@ -34,9 +36,14 @@
   "dependencies": {
     "@lonord/react-electron-components": "^1.0.5",
     "electron-is-dev": "^0.3.0",
+    "electron-unhandled": "^1.0.0",
     "fecha": "^2.3.3",
+    "lodash.debounce": "^4.0.8",
+    "mkdirp": "^0.5.1",
+    "npm": "^5.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "styled-components": "^3.1.6"
+    "styled-components": "^3.1.6",
+    "yamljs": "^0.3.0"
   }
 }

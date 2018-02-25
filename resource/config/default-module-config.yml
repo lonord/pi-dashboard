@@ -1,0 +1,11 @@
+# Pi dashboard configuration
+
+# global configuration, contains key-value pairs
+globalConfig:
+  routerRPCServerPath: 'http://your-router-rpc-url'
+
+# component modules list
+componentModules:
+# item must contains `name` property, 
+# the rest properties are configuration key-value pairs merging to global config
+  - { name: '**YOUR_MODULE_NAME**', customConfig1: 'config1', customConfig2: 'config2' }
