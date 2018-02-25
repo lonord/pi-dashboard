@@ -9,6 +9,7 @@ import {
 import * as React from 'react'
 import styled from 'styled-components'
 import AboutDialog from './dialog-about'
+import ExitDialog from './dialog-exit'
 
 const ToolbarIconButton = styled(IconButton) `
 	height: 40px;
@@ -26,15 +27,16 @@ const MoreMenuWrap = styled.div`
 const aboutPortal = createPortalDock(AboutDialog)
 const AboutDockComp = aboutPortal.DockComp
 
+const exitPortal = createPortalDock(ExitDialog)
+const ExitDockComp = exitPortal.DockComp
+
 class MoreMenu extends React.Component<any, any> {
 	render() {
 		return (
 			<MoreMenuWrap>
 				<MenuItem onClick={() => aboutPortal.show()}>关于</MenuItem>
 				<Separate />
-				<MenuItem>设置</MenuItem>
-				<Separate />
-				<MenuItem>退出</MenuItem>
+				<MenuItem onClick={() => exitPortal.show()}>退出</MenuItem>
 			</MoreMenuWrap>
 		)
 	}
@@ -47,6 +49,7 @@ const MoreMenuButton = withMenu((
 export default () => (
 	<FlexItemFix>
 		<MoreMenuButton icon="ellipsis-v" />
-		<AboutDockComp/>
+		<AboutDockComp />
+		<ExitDockComp />
 	</FlexItemFix>
 )
