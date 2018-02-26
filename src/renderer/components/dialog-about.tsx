@@ -2,11 +2,11 @@ import {
 	Dialog,
 	DialogProps
 } from '@lonord/react-electron-components'
-import { remote } from 'electron'
 import * as React from 'react'
 import styled from 'styled-components'
+import { modulePackage } from '../util/remote'
 
-const pkg = remote.require('../../package.json')
+const pkg = modulePackage
 
 const Title = styled.div`
 	font-size: 18px;

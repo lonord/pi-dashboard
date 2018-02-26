@@ -1,8 +1,10 @@
 import { ChildProcess, fork } from 'child_process'
+import * as debug from 'debug'
 import { writeFile } from 'fs'
-import { getInstalledPath } from 'get-installed-path'
 import { join } from 'path'
 import { promisify } from 'util'
+
+const log = debug('pi-dashboard:npm-installer')
 
 const writeFileAsync = promisify(writeFile)
 
@@ -15,6 +17,7 @@ export default async function npmInstall(modules: string[], destDir: string) {
 	for (const m of modules) {
 		pkgDep.dependencies[m] = '*'
 	}
+	log('write package.json %j', pkgDep)
 	await writeFileAsync(join(destDir, 'package.json'), JSON.stringify(pkgDep), 'utf8')
 	const npmResult = await execNpmInstall(destDir)
 	return npmResult
@@ -44,7 +47,8 @@ function execNpmInstall(cwd: string): Promise<{ code: number, output: string, is
 }
 
 function checkAlreadyRunning(fn: () => void) {
-	if (installProcess && !installProcess.killed) {
+	if (installProcess && installProcess.connected && !installProcess.killed) {
+		log('npm install is in process, kill it')
 		installProcess.once('close', fn)
 		installProcess.kill('SIGINT')
 	} else {
@@ -59,6 +63,7 @@ interface InstallResult {
 }
 
 function installSingle(npmCliPath: string, cwd: string, fn: (result: InstallResult) => void) {
+	log('begin npm install, npm exectuable: %s', npmCliPath)
 	installProcess = fork(npmCliPath, ['install', '--no-package-lock'], {
 		execArgv: [],
 		silent: true,
@@ -81,9 +86,11 @@ function installSingle(npmCliPath: string, cwd: string, fn: (result: InstallResu
 			chunk.copy(buffer, pos)
 			pos += chunk.length
 		}
+		const output = buffer.toString()
+		log('npm process closed with code %n, signal %s, output %s', code, signal, output)
 		fn({
 			code,
-			output: buffer.toString(),
+			output,
 			signal
 		})
 	})

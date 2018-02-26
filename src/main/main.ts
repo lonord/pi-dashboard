@@ -10,6 +10,10 @@ import * as cfg from './config'
 // tslint:disable-next-line:no-string-literal
 global['pi-dashboard-config'] = cfg
 
+// cfg.addListener('updated', () => console.log('updated'))
+// cfg.addListener('start-update', () => console.log('start-update'))
+// cfg.addListener('err', () => console.log('err'))
+
 const tsCompiler = createTsCompiler()
 let mainWindow: BrowserWindow
 
@@ -50,7 +54,12 @@ app.on('ready', () => {
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name) => console.log(`Added Extension:  ${name}`))
 			.catch((err) => console.log('An error occurred: ', err))
-		tsCompiler(createWindow, () => mainWindow && mainWindow.reload())
+		tsCompiler(createWindow, () => {
+			if (mainWindow) {
+				cfg.purgeListeners()
+				mainWindow.reload()
+			}
+		})
 	} else {
 		createWindow()
 	}

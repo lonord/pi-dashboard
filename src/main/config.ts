@@ -23,10 +23,13 @@ if (!validConfigContent(configObj)) {
 	throw new Error('configuration file format error')
 }
 
-watch(configFile, debounce((event: string) => {
+watch(configFile, debounce(update, 1000))
+
+function update() {
 	readFileAsync(configFile, 'utf8').catch((err) => {
 		return Promise.reject('配置文件读取失败')
 	}).then((content) => {
+		emitter.emit('start-update')
 		const newConfigObj = YAML.parse(content)
 		if (validConfigContent(newConfigObj)) {
 			const componentModules = newConfigObj.componentModules || []
@@ -46,27 +49,21 @@ watch(configFile, debounce((event: string) => {
 		// newConfigObj为null表示忽略该次操作
 		if (newConfigObj) {
 			configObj = newConfigObj
-			emitter.emit('update', getConfig())
+			emitter.emit('updated', getConfig())
 		}
 	}).catch((msg) => {
 		emitter.emit('err', msg)
 	})
-}, 1000))
-
-function addUpdateListener(fn: (config: any) => void) {
-	emitter.addListener('update', fn)
 }
 
-function removeUpdateListener(fn: (config: any) => void) {
-	emitter.removeListener('update', fn)
+type EventType = 'updated' | 'err' | 'start-update'
+
+function addListener(event: EventType, fn: (arg: any) => void) {
+	emitter.addListener(event, fn)
 }
 
-function addErrorListener(fn: (msg: string) => void) {
-	emitter.addListener('err', fn)
-}
-
-function removeErrorListener(fn: (msg: string) => void) {
-	emitter.removeListener('err', fn)
+function removeListener(event: EventType, fn: (arg: any) => void) {
+	emitter.removeListener(event, fn)
 }
 
 function getConfig() {
@@ -89,6 +86,14 @@ function getConfig() {
 	return obj
 }
 
+function trigUpdate() {
+	update()
+}
+
+function purgeListeners() {
+	emitter.removeAllListeners()
+}
+
 function initConfigFile(configFile: string) {
 	if (!existsSync(configFile)) {
 		const str = readFileSync(join(__dirname, '../../resource/config/default-module-config.yml'), 'utf8')
@@ -109,9 +114,9 @@ async function installModule(modules: string[], destDir: string) {
 }
 
 export {
-	addUpdateListener,
-	removeUpdateListener,
-	addErrorListener,
-	removeErrorListener,
-	getConfig
+	addListener,
+	removeListener,
+	getConfig,
+	trigUpdate,
+	purgeListeners
 }
