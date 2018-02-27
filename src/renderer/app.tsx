@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled, { injectGlobal } from 'styled-components'
 import DateTime from './components/datetime'
 import Logo from './components/logo'
+import ModuleContainer from './components/module-container'
 import Toolbar from './components/toolbar'
 import Content from './layouts/content'
 import Header from './layouts/header'
@@ -25,7 +26,7 @@ injectGlobal`
 		height: 100%;
 		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
 		Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimSun, sans-serif;
-		-webkit-user-select: none;
+		user-select: none;
 	}
 	#react-root {
 		height: 100%;
@@ -40,7 +41,7 @@ export default () => (
 			<Toolbar />
 		</Header>
 		<Content>
-			content
+			<ModuleContainer />
 		</Content>
 	</Main>
 )

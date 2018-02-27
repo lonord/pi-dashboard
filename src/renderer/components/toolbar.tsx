@@ -9,6 +9,7 @@ import {
 } from '@lonord/react-electron-components'
 import * as React from 'react'
 import styled from 'styled-components'
+import formatHTMLText from '../util/react-html-formatter'
 import { configUtil } from '../util/remote'
 import Button from './button'
 import AboutDialog from './dialog-about'
@@ -22,11 +23,17 @@ const ToolbarIconButton = styled(IconButton) `
 `
 
 const WarnToolbarIconButton = ToolbarIconButton.extend`
-	color: red;
+	color: #f5bf51;
 `
 
 const ErrorDialog = styled(Dialog) `
 	max-width: 60%;
+`
+
+const ErrorMsgText = styled.div`
+	max-height: 500px;
+	overflow-x: hidden;
+	overflow-y: auto;
 `
 
 interface InstallStatusButtonState {
@@ -113,12 +120,12 @@ class InstallStatusButton extends React.Component<any, InstallStatusButtonState>
 			<ErrorDialog key="error-dialog"
 				isOpen={isErrorDialogOpen}
 				onClose={this.closeDialog}
-				title="刷新错误"
+				title="模块安装错误"
 				buttons={[
 					<Button key="error-dialog-button-ignore" onClick={this.ignoreError}>忽略</Button>,
 					<Button key="error-dialog-button-retry" primary={true} onClick={this.retry}>重试</Button>
 				]}>
-				<div>{errorMsg}</div>
+				<ErrorMsgText dangerouslySetInnerHTML={{ __html: formatHTMLText(errorMsg)}}/>
 			</ErrorDialog>
 		]
 	}

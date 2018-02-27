@@ -39,6 +39,10 @@ function createWindow() {
 	// Open the DevTools.
 	// mainWindow.webContents.openDevTools()
 
+	mainWindow.on('close', () => {
+		clearConfigListeners()
+	})
+
 	// Emitted when the window is closed.
 	mainWindow.on('closed', () => {
 		// Dereference the window object, usually you would store windows
@@ -46,6 +50,10 @@ function createWindow() {
 		// when you should delete the corresponding element.
 		mainWindow = null
 	})
+}
+
+function clearConfigListeners() {
+	cfg.purgeListeners()
 }
 
 app.on('ready', () => {
@@ -56,7 +64,7 @@ app.on('ready', () => {
 			.catch((err) => console.log('An error occurred: ', err))
 		tsCompiler(createWindow, () => {
 			if (mainWindow) {
-				cfg.purgeListeners()
+				clearConfigListeners()
 				mainWindow.reload()
 			}
 		})
