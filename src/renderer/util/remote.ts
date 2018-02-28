@@ -19,6 +19,7 @@ export interface ConfigUtil {
 	removeListener(event: 'err', fn: (msg: string) => void)
 	getConfig(): PiConfig
 	trigUpdate()
+	getNodeModulesDirectory(): string
 }
 export interface PiConfig {
 	globalConfig: { [key: string]: any }

@@ -13,6 +13,7 @@ const readFileAsync = promisify(readFile)
 const emitter = new EventEmitter()
 const configDir = join(homedir(), '.pi-dashboard')
 const configFile = join(configDir, 'config.yml')
+const nodeModuleDirectory = join(configDir, 'node_modules')
 const invalidModuleNameReg = /^\*\*(.*)\*\*$/
 
 mkdirp.sync(configDir)
@@ -94,6 +95,10 @@ function purgeListeners() {
 	emitter.removeAllListeners()
 }
 
+function getNodeModulesDirectory() {
+	return nodeModuleDirectory
+}
+
 function initConfigFile(configFile: string) {
 	if (!existsSync(configFile)) {
 		const str = readFileSync(join(__dirname, '../../resource/config/default-module-config.yml'), 'utf8')
@@ -118,5 +123,6 @@ export {
 	removeListener,
 	getConfig,
 	trigUpdate,
-	purgeListeners
+	purgeListeners,
+	getNodeModulesDirectory
 }

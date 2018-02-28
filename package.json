@@ -35,7 +35,7 @@
     "webpack": "^3.11.0"
   },
   "dependencies": {
-    "@lonord/react-electron-components": "^1.0.6",
+    "@lonord/react-electron-components": "^1.0.8",
     "debug": "^3.1.0",
     "electron-is-dev": "^0.3.0",
     "electron-unhandled": "^1.0.0",

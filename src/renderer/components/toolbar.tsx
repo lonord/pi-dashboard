@@ -50,21 +50,18 @@ class InstallStatusButton extends React.Component<any, InstallStatusButtonState>
 	}
 
 	onStartUpdate = () => {
-		console.log('onStartUpdate')
 		this.setState({
 			status: 'updating'
 		})
 	}
 
 	onUpdated = () => {
-		console.log('onUpdated')
 		this.setState({
 			status: 'normal'
 		})
 	}
 
 	onError = (msg: string) => {
-		console.log('onError')
 		this.setState({
 			status: 'error',
 			errorMsg: msg
