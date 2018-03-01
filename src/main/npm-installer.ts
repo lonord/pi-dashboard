@@ -15,7 +15,7 @@ export default async function npmInstall(modules: string[], destDir: string) {
 		dependencies: {}
 	}
 	for (const m of modules) {
-		pkgDep.dependencies[m] = '*'
+		pkgDep.dependencies[m] = 'latest'
 	}
 	log('write package.json %j', pkgDep)
 	await writeFileAsync(join(destDir, 'package.json'), JSON.stringify(pkgDep), 'utf8')
@@ -64,7 +64,7 @@ interface InstallResult {
 
 function installSingle(npmCliPath: string, cwd: string, fn: (result: InstallResult) => void) {
 	log('begin npm install, npm exectuable: %s', npmCliPath)
-	installProcess = fork(npmCliPath, ['install', '--no-package-lock'], {
+	installProcess = fork(npmCliPath, ['update', '--no-package-lock'], {
 		execArgv: [],
 		silent: true,
 		cwd

@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { existsSync, readFile, readFileSync, watch, writeFileSync } from 'fs'
+import { existsSync, readFile, readFileSync, symlinkSync, unlinkSync, watch, writeFileSync } from 'fs'
 import * as debounce from 'lodash.debounce'
 import * as mkdirp from 'mkdirp'
 import { homedir } from 'os'
@@ -11,12 +11,20 @@ import npmInstall from './npm-installer'
 const readFileAsync = promisify(readFile)
 
 const emitter = new EventEmitter()
-const configDir = join(homedir(), '.pi-dashboard')
-const configFile = join(configDir, 'config.yml')
+const configHome = join(homedir(), '.pi-dashboard')
+const configDir = join(configHome, 'modules')
+const configFile = join(configHome, 'config.yml')
 const nodeModuleDirectory = join(configDir, 'node_modules')
+const linkedModuleDirectory = join(configHome, 'node_modules')
 const invalidModuleNameReg = /^\*\*(.*)\*\*$/
 
+const internalNodeModuleDir = join(__dirname, '../../node_modules')
+
 mkdirp.sync(configDir)
+if (existsSync(linkedModuleDirectory)) {
+	unlinkSync(linkedModuleDirectory)
+}
+symlinkSync(internalNodeModuleDir, linkedModuleDirectory)
 initConfigFile(configFile)
 
 let configObj = YAML.parse(readFileSync(configFile, 'utf8')) || {}

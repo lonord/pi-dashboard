@@ -8,12 +8,13 @@ import {
 import * as React from 'react'
 import styled, { StyledComponentClass } from 'styled-components'
 import Scroller from '../layouts/scroller'
+import clearModule from '../util/clear-module'
 import { configUtil, PiConfig } from '../util/remote'
-import requireWithoutCache from '../util/require-without-cache'
 import ErrorBoundary from './error-boundary'
 
 const ModuleContentWrap = withFlexVertical(withItemAdaptive(styled(Scroller) `
 	flex-wrap: wrap;
+	align-content: flex-start;
 `))
 
 interface ModuleItem {
@@ -34,10 +35,11 @@ export default class ModuleContainer extends
 	onUpdated = (config: PiConfig) => {
 		const modules: ModuleItem[] = []
 		const nodeModulesPath = configUtil.getNodeModulesDirectory()
+		clearModule(nodeModulesPath)
 		for (const moduleName in config.modules) {
-			const m = requireWithoutCache(`${nodeModulesPath}/${moduleName}`)
+			const m = require(`${nodeModulesPath}/${moduleName}`)
 			if (m) {
-				const moduleObj = m.default || m
+				const moduleObj = m
 				if (moduleObj.size && moduleObj.Comp) {
 					modules.push({
 						size: moduleObj.size === 'small' ? 'small' : 'normal',
@@ -69,19 +71,23 @@ export default class ModuleContainer extends
 			<ModuleContentWrap>
 				{modules.map((m, idx) => m.size === 'small'
 					? (
-						<SmallModuleItem>
-							<m.Comp key={idx} {...m.props} />
+						<SmallModuleItem key={idx}>
+							<m.Comp {...m.props} />
 						</SmallModuleItem>
 					)
 					: (
-						<ModuleItem>
-							<m.Comp key={idx} {...m.props} />
+						<ModuleItem key={idx}>
+							<m.Comp {...m.props} />
 						</ModuleItem>
 					)
 				)}
 				<ModuleItem>1</ModuleItem>
 				<SmallModuleItem>2</SmallModuleItem>
 				<SmallModuleItem>3</SmallModuleItem>
+				<ModuleItem>4</ModuleItem>
+				<ModuleItem>5</ModuleItem>
+				<ModuleItem>6</ModuleItem>
+				<ModuleItem>7</ModuleItem>
 			</ModuleContentWrap>
 		)
 	}
