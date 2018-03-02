@@ -19,7 +19,7 @@ const ToolbarIconButton = styled(IconButton) `
 	height: 40px;
 	width: 40px;
 	font-size: 20px;
-	color: #aaa;
+	color: #ccc;
 `
 
 const WarnToolbarIconButton = ToolbarIconButton.extend`
