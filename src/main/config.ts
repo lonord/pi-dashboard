@@ -42,7 +42,10 @@ function update() {
 		const newConfigObj = YAML.parse(content)
 		if (validConfigContent(newConfigObj)) {
 			const componentModules = newConfigObj.componentModules || []
-			const modules = componentModules.map((m) => m.name).filter((m) => !invalidModuleNameReg.test(m))
+			const modules = componentModules.map((m) => ({
+				name: m._name,
+				tag: m._tag
+			})).filter((mo) => !invalidModuleNameReg.test(mo.name))
 			return installModule(modules, configDir).then((result) => {
 				if (result.isAbort) {
 					console.log('previous npm install process is aborted')
@@ -83,11 +86,11 @@ function getConfig() {
 		modules: {} as any
 	}
 	for (const m of componentModules) {
-		const { name, ...rest } = m
-		if (invalidModuleNameReg.test(name)) {
+		const { _name, _tag, ...rest } = m
+		if (invalidModuleNameReg.test(_name)) {
 			continue
 		}
-		obj.modules[name] = {
+		obj.modules[_name] = {
 			...globalConfig,
 			...rest
 		}
@@ -118,7 +121,7 @@ function validConfigContent(configObj: any): boolean {
 	return configObj.globalConfig && configObj.componentModules
 }
 
-async function installModule(modules: string[], destDir: string) {
+async function installModule(modules: Array<{ name: string, tag?: string }>, destDir: string) {
 	const result = await npmInstall(modules, destDir)
 	if (result.code !== 0) {
 		throw new Error(result.output)

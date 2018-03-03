@@ -21,10 +21,14 @@ export default class Scroller extends React.Component<React.HTMLAttributes<HTMLD
 	dragging = false
 	element: HTMLDivElement = null
 	lastPosition: number | null = null
+	firstPosition: number | null = null
+	needCancelClick = false
 
 	onDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
 		this.dragging = true
 		this.lastPosition = null
+		this.firstPosition = null
+		this.needCancelClick = false
 	}
 
 	onDragStop = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -47,12 +51,23 @@ export default class Scroller extends React.Component<React.HTMLAttributes<HTMLD
 				scrollLeft = width
 			}
 			this.element.scrollLeft = scrollLeft
+		} else {
+			this.firstPosition = thisPosition
 		}
 		this.lastPosition = thisPosition
+		if (Math.abs(this.firstPosition - thisPosition) > 10) {
+			this.needCancelClick = true
+		}
 	}
 
 	onCancel = () => {
 		this.dragging = false
+	}
+
+	onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (this.needCancelClick) {
+			e.stopPropagation()
+		}
 	}
 
 	render() {
@@ -61,7 +76,8 @@ export default class Scroller extends React.Component<React.HTMLAttributes<HTMLD
 				onMouseDown={this.onDragStart}
 				onMouseUp={this.onDragStop}
 				onMouseMove={this.onDragMove}
-				onMouseLeave={this.onCancel}/>
+				onMouseLeave={this.onCancel}
+				onClickCapture={this.onClickCapture}/>
 		)
 	}
 }

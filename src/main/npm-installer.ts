@@ -10,12 +10,13 @@ const writeFileAsync = promisify(writeFile)
 
 let installProcess: ChildProcess = null
 
-export default async function npmInstall(modules: string[], destDir: string) {
+export default async function npmInstall(modules: Array<{ name: string, tag?: string }>, destDir: string) {
 	const pkgDep = {
 		dependencies: {}
 	}
 	for (const m of modules) {
-		pkgDep.dependencies[m] = 'latest'
+		const tag = m.tag || 'latest'
+		pkgDep.dependencies[m.name] = tag
 	}
 	log('write package.json %j', pkgDep)
 	await writeFileAsync(join(destDir, 'package.json'), JSON.stringify(pkgDep), 'utf8')
