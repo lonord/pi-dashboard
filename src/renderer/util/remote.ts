@@ -20,6 +20,8 @@ export interface ConfigUtil {
 	getConfig(): PiConfig
 	trigUpdate()
 	getNodeModulesDirectory(): string
+	writeProperties(props: any): Promise<void>
+	readProperties(): Promise<any>
 }
 export interface PiConfig {
 	globalConfig: { [key: string]: any }

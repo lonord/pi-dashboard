@@ -5,6 +5,7 @@ import {
 	withItemAdaptive,
 	withItemFix
 } from '@lonord/react-electron-components'
+import * as debounce from 'lodash.debounce'
 import * as React from 'react'
 import styled, { StyledComponentClass } from 'styled-components'
 import Scroller from '../layouts/scroller'
@@ -18,18 +19,21 @@ const ModuleContentWrap = withFlexVertical(withItemAdaptive(styled(Scroller) `
 `))
 
 interface ModuleItem {
+	name: string
 	size: 'small' | 'normal'
 	Comp: React.ComponentType<any>
 	props: { [key: string]: any }
 }
 interface ModuleContainerState {
 	modules: ModuleItem[]
+	properties: any
 }
 export default class ModuleContainer extends
 	React.Component<React.HTMLAttributes<HTMLDivElement>, ModuleContainerState> {
 
 	state: ModuleContainerState = {
-		modules: []
+		modules: [],
+		properties: {}
 	}
 
 	onUpdated = (config: PiConfig) => {
@@ -44,15 +48,19 @@ export default class ModuleContainer extends
 					modules.push({
 						size: moduleObj.size === 'small' ? 'small' : 'normal',
 						Comp: moduleObj.Comp,
-						props: config.modules[moduleName]
+						props: config.modules[moduleName],
+						name: moduleName
 					})
 				} else {
 					console.warn(`Could not load module '${moduleName}'`)
 				}
 			}
 		}
-		this.setState({
-			modules
+		configUtil.readProperties().then((properties) => {
+			this.setState({
+				modules,
+				properties
+			})
 		})
 	}
 
@@ -65,19 +73,40 @@ export default class ModuleContainer extends
 		configUtil.removeListener('updated', this.onUpdated)
 	}
 
+	updateModuleProps = (moduleName: string, moduleProps: any) => {
+		const newProperties = {
+			...this.state.properties
+		}
+		newProperties[moduleName] = {
+			...newProperties[moduleName],
+			...moduleProps
+		}
+		this.setState({
+			properties: newProperties
+		}, () => this.saveProperties(newProperties))
+	}
+
+	doSaveProperties = (moduleProps: any) => {
+		configUtil.writeProperties(moduleProps)
+	}
+
+	saveProperties = debounce(this.doSaveProperties, 3000)
+
 	render() {
-		const { modules } = this.state
+		const { modules, properties } = this.state
 		return (
 			<ModuleContentWrap>
 				{modules.map((m, idx) => m.size === 'small'
 					? (
 						<SmallModuleItem key={idx}>
-							<m.Comp {...m.props} />
+							<m.Comp {...m.props} {...(properties[m.name] || {})}
+								updateProps={(props) => this.updateModuleProps(m.name, props)} />
 						</SmallModuleItem>
 					)
 					: (
 						<ModuleItem key={idx}>
-							<m.Comp {...m.props} />
+							<m.Comp {...m.props} {...(properties[m.name] || {})}
+								updateProps={(props) => this.updateModuleProps(m.name, props)} />
 						</ModuleItem>
 					)
 				)}

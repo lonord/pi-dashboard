@@ -1,5 +1,14 @@
 import { EventEmitter } from 'events'
-import { existsSync, readFile, readFileSync, symlinkSync, unlinkSync, watch, writeFileSync } from 'fs'
+import {
+	existsSync,
+	readFile,
+	readFileSync,
+	symlinkSync,
+	unlinkSync,
+	watch,
+	writeFile,
+	writeFileSync
+} from 'fs'
 import * as debounce from 'lodash.debounce'
 import * as mkdirp from 'mkdirp'
 import { homedir } from 'os'
@@ -9,11 +18,13 @@ import * as YAML from 'yamljs'
 import npmInstall from './npm-installer'
 
 const readFileAsync = promisify(readFile)
+const writeFileAsync = promisify(writeFile)
 
 const emitter = new EventEmitter()
 const configHome = join(homedir(), '.pi-dashboard')
 const configDir = join(configHome, 'modules')
 const configFile = join(configHome, 'config.yml')
+const propertiesFile = join(configHome, 'properties.json')
 const nodeModuleDirectory = join(configDir, 'node_modules')
 const linkedModuleDirectory = join(configHome, 'node_modules')
 const invalidModuleNameReg = /^\*\*(.*)\*\*$/
@@ -25,6 +36,9 @@ if (existsSync(linkedModuleDirectory)) {
 	unlinkSync(linkedModuleDirectory)
 }
 symlinkSync(internalNodeModuleDir, linkedModuleDirectory)
+if (!existsSync(propertiesFile)) {
+	writeFileSync(propertiesFile, '{}', 'utf8')
+}
 initConfigFile(configFile)
 
 let configObj = YAML.parse(readFileSync(configFile, 'utf8')) || {}
@@ -110,6 +124,24 @@ function getNodeModulesDirectory() {
 	return nodeModuleDirectory
 }
 
+async function writeProperties(props: any) {
+	try {
+		await writeFileAsync(propertiesFile, JSON.stringify(props, null, 2), 'utf8')
+	} catch (e) {
+		console.error(e)
+	}
+}
+
+async function readProperties() {
+	try {
+		const content = await readFileAsync(propertiesFile, 'utf8')
+		return JSON.parse(content)
+	} catch (e) {
+		console.log(e)
+		return {}
+	}
+}
+
 function initConfigFile(configFile: string) {
 	if (!existsSync(configFile)) {
 		const str = readFileSync(join(__dirname, '../../resource/config/default-module-config.yml'), 'utf8')
@@ -135,5 +167,7 @@ export {
 	getConfig,
 	trigUpdate,
 	purgeListeners,
-	getNodeModulesDirectory
+	getNodeModulesDirectory,
+	writeProperties,
+	readProperties
 }
