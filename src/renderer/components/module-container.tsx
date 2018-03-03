@@ -11,6 +11,7 @@ import styled, { StyledComponentClass } from 'styled-components'
 import Scroller from '../layouts/scroller'
 import clearModule from '../util/clear-module'
 import { configUtil, PiConfig } from '../util/remote'
+import ModuleAboutDialog from './dialog/module-about'
 import ErrorBoundary from './error-boundary'
 
 const ModuleContentWrap = withFlexVertical(withItemAdaptive(styled(Scroller) `
@@ -23,17 +24,27 @@ interface ModuleItem {
 	size: 'small' | 'normal'
 	Comp: React.ComponentType<any>
 	props: { [key: string]: any }
+	version: string
+	displayName: string
 }
 interface ModuleContainerState {
 	modules: ModuleItem[]
 	properties: any
+	isAboutOpen: boolean
+	aboutModuleName: string
+	aboutModuleVersion: string
+	aboutModuleID: string
 }
 export default class ModuleContainer extends
 	React.Component<React.HTMLAttributes<HTMLDivElement>, ModuleContainerState> {
 
 	state: ModuleContainerState = {
 		modules: [],
-		properties: {}
+		properties: {},
+		isAboutOpen: false,
+		aboutModuleName: '',
+		aboutModuleVersion: '',
+		aboutModuleID: ''
 	}
 
 	onUpdated = (config: PiConfig) => {
@@ -49,7 +60,9 @@ export default class ModuleContainer extends
 						size: moduleObj.size === 'small' ? 'small' : 'normal',
 						Comp: moduleObj.Comp,
 						props: config.modules[moduleName],
-						name: moduleName
+						name: moduleName,
+						version: moduleObj.version || '-',
+						displayName: moduleObj.name || moduleName
 					})
 				} else {
 					console.warn(`Could not load module '${moduleName}'`)
@@ -73,6 +86,23 @@ export default class ModuleContainer extends
 		configUtil.removeListener('updated', this.onUpdated)
 	}
 
+	onAboutModuleClose = () => {
+		this.setState({
+			isAboutOpen: false
+		})
+	}
+
+	showAboutModule = (mod: ModuleItem) => {
+		if (mod) {
+			this.setState({
+				isAboutOpen: true,
+				aboutModuleName: mod.displayName,
+				aboutModuleID: mod.name,
+				aboutModuleVersion: mod.version
+			})
+		}
+	}
+
 	updateModuleProps = (moduleName: string, moduleProps: any) => {
 		const newProperties = {
 			...this.state.properties
@@ -93,18 +123,18 @@ export default class ModuleContainer extends
 	saveProperties = debounce(this.doSaveProperties, 3000)
 
 	render() {
-		const { modules, properties } = this.state
+		const { modules, properties, isAboutOpen, aboutModuleName, aboutModuleVersion, aboutModuleID } = this.state
 		return (
 			<ModuleContentWrap>
 				{modules.map((m, idx) => m.size === 'small'
 					? (
-						<SmallModuleItem key={idx}>
+						<SmallModuleItem key={idx} onDoubleClick={() => this.showAboutModule(m)}>
 							<m.Comp {...m.props} {...(properties[m.name] || {})}
 								updateProps={(props) => this.updateModuleProps(m.name, props)} />
 						</SmallModuleItem>
 					)
 					: (
-						<ModuleItem key={idx}>
+						<ModuleItem key={idx} onDoubleClick={() => this.showAboutModule(m)}>
 							<m.Comp {...m.props} {...(properties[m.name] || {})}
 								updateProps={(props) => this.updateModuleProps(m.name, props)} />
 						</ModuleItem>
@@ -117,6 +147,12 @@ export default class ModuleContainer extends
 				<ModuleItem>5</ModuleItem>
 				<ModuleItem>6</ModuleItem>
 				<ModuleItem>7</ModuleItem>
+				<ModuleAboutDialog
+					isOpen={isAboutOpen}
+					displayName={aboutModuleName}
+					moduleName={aboutModuleID}
+					version={aboutModuleVersion}
+					onClose={this.onAboutModuleClose}/>
 			</ModuleContentWrap>
 		)
 	}

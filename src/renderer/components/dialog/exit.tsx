@@ -3,7 +3,7 @@ import {
 	DialogProps
 } from '@lonord/react-electron-components'
 import * as React from 'react'
-import Button from './button'
+import Button from '../button'
 
 export default class ExitDialog extends React.Component<DialogProps, any> {
 
