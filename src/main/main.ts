@@ -59,12 +59,15 @@ app.on('ready', () => {
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name) => console.log(`Added Extension:  ${name}`))
 			.catch((err) => console.log('An error occurred: ', err))
-		tsCompiler(createWindow, () => {
+		const next = () => tsCompiler(createWindow, () => {
 			if (mainWindow) {
 				clearConfigListeners()
 				mainWindow.reload()
 			}
 		})
+		cfg.addListener('updated', next)
+		cfg.addListener('err', next)
+		cfg.trigUpdate()
 	} else {
 		createWindow()
 	}

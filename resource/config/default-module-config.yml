@@ -2,7 +2,7 @@
 
 # global configuration, contains key-value pairs
 globalConfig:
-  routerRPCServerPath: 'http://your-router-rpc-url'
+  rpcBaseUrl: 'http://your-router-rpc-url'
 
 # component modules list
 componentModules:

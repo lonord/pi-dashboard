@@ -140,13 +140,6 @@ export default class ModuleContainer extends
 						</ModuleItem>
 					)
 				)}
-				<ModuleItem>1</ModuleItem>
-				<SmallModuleItem>2</SmallModuleItem>
-				<SmallModuleItem>3</SmallModuleItem>
-				<ModuleItem>4</ModuleItem>
-				<ModuleItem>5</ModuleItem>
-				<ModuleItem>6</ModuleItem>
-				<ModuleItem>7</ModuleItem>
 				<ModuleAboutDialog
 					isOpen={isAboutOpen}
 					displayName={aboutModuleName}
