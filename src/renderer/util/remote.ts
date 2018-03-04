@@ -22,9 +22,14 @@ export interface ConfigUtil {
 	getNodeModulesDirectory(): string
 	writeProperties(props: any): Promise<void>
 	readProperties(): Promise<any>
+	purgeListeners()
 }
 export interface PiConfig {
 	globalConfig: { [key: string]: any }
 	modules: { [name: string]: { [key: string]: any } }
 }
 export const configUtil = remote.getGlobal('pi-dashboard-config') as ConfigUtil
+
+window.addEventListener('unload', () => {
+	configUtil.purgeListeners()
+})

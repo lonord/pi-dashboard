@@ -30,6 +30,8 @@ export default function formatHTMLText(text: string) {
 			case '"':
 				escape = '&quot;'
 				break
+			default:
+				escape = ch
 		}
 		result += escape
 	}

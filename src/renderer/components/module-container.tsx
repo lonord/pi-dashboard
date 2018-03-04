@@ -128,13 +128,13 @@ export default class ModuleContainer extends
 			<ModuleContentWrap>
 				{modules.map((m, idx) => m.size === 'small'
 					? (
-						<SmallModuleItem key={idx} onDoubleClick={() => this.showAboutModule(m)}>
+						<SmallModuleItem key={idx} onLongTap={() => this.showAboutModule(m)}>
 							<m.Comp {...m.props} {...(properties[m.name] || {})}
 								updateProps={(props) => this.updateModuleProps(m.name, props)} />
 						</SmallModuleItem>
 					)
 					: (
-						<ModuleItem key={idx} onDoubleClick={() => this.showAboutModule(m)}>
+						<ModuleItem key={idx} onLongTap={() => this.showAboutModule(m)}>
 							<m.Comp {...m.props} {...(properties[m.name] || {})}
 								updateProps={(props) => this.updateModuleProps(m.name, props)} />
 						</ModuleItem>
@@ -165,14 +165,59 @@ const ModuleItemContentWrap = withFlexVertical(styled(FlexItemAdaptive) `
 
 const ModuleItemContent = FlexItemAdaptive.extend`
 	overflow: hidden;
+	position: relative;
 `
 
-class RawModuleItem extends React.Component<React.HTMLAttributes<HTMLDivElement>, any> {
+interface RawModuleItemProps extends React.HTMLAttributes<HTMLDivElement> {
+	onLongTap?()
+}
+class RawModuleItem extends React.Component<RawModuleItemProps, any> {
+
+	downState = {
+		x: 0,
+		y: 0,
+		timestamp: 0
+	}
+	needCancelClick = false
+
+	onClickDown = (e: React.MouseEvent<HTMLDivElement>) => {
+		this.downState = {
+			x: e.clientX,
+			y: e.clientY,
+			timestamp: new Date().getTime()
+		}
+		this.needCancelClick = false
+	}
+
+	onClickUp = (e: React.MouseEvent<HTMLDivElement>) => {
+		const { onLongTap } = this.props
+		const upState = {
+			x: e.clientX,
+			y: e.clientY,
+			timestamp: new Date().getTime()
+		}
+		const dx = upState.x - this.downState.x
+		const dy = upState.y - this.downState.y
+		if (upState.timestamp - this.downState.timestamp > 2000 && Math.sqrt(dx * dx + dy * dy) < 10) {
+			onLongTap && onLongTap()
+			this.needCancelClick = true
+		}
+	}
+
+	onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (this.needCancelClick) {
+			e.stopPropagation()
+		}
+	}
+
 	render() {
-		const { children, ...rest } = this.props
+		const { children, onLongTap, ...rest } = this.props
 		return (
 			<div {...rest}>
-				<ModuleItemContentWrap>
+				<ModuleItemContentWrap
+					onMouseDown={this.onClickDown}
+					onMouseUp={this.onClickUp}
+					onClickCapture={this.onClickCapture}>
 					<ModuleItemContent>
 						<ErrorBoundary>{children}</ErrorBoundary>
 					</ModuleItemContent>

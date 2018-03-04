@@ -1,6 +1,7 @@
 import { ChildProcess, fork } from 'child_process'
 import * as debug from 'debug'
 import { writeFile } from 'fs'
+import * as fse from 'fs-extra'
 import { join } from 'path'
 import { promisify } from 'util'
 
@@ -64,8 +65,14 @@ interface InstallResult {
 }
 
 function installSingle(npmCliPath: string, cwd: string, fn: (result: InstallResult) => void) {
+	try {
+		fse.removeSync(join(cwd, 'node_modules'))
+		log('deleted exist node_modules')
+	} catch (e) {
+		// ignore
+	}
 	log('begin npm install, npm exectuable: %s', npmCliPath)
-	installProcess = fork(npmCliPath, ['update', '--no-package-lock'], {
+	installProcess = fork(npmCliPath, ['install', '--no-package-lock'], {
 		execArgv: [],
 		silent: true,
 		cwd
