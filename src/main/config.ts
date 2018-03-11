@@ -137,7 +137,7 @@ async function readProperties() {
 		const content = await readFileAsync(propertiesFile, 'utf8')
 		return JSON.parse(content)
 	} catch (e) {
-		console.log(e)
+		console.error(e)
 		return {}
 	}
 }
