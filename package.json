@@ -2,11 +2,13 @@
   "name": "pi-dashboard",
   "version": "1.0.0",
   "description": "Dashboard powered by electron designed for raspberry pi",
+  "homepage": "https://github.com/lonord/pi-dashboard",
   "main": "lib/main/index.js",
   "scripts": {
     "clean": "rimraf lib/",
     "dev": "electron .",
-    "build": "npm run clean && tsc -p tsconfig.renderer.json && tsc -p tsconfig.main.json"
+    "build": "npm run clean && tsc -p tsconfig.renderer.json && tsc -p tsconfig.main.json",
+    "dist": "npm run build && rimraf dist/ && electron-builder --mac --linux --armv7l deb"
   },
   "repository": {
     "type": "git",
@@ -25,10 +27,11 @@
     "@types/fs-extra": "^5.0.1",
     "@types/mkdirp": "^0.5.2",
     "@types/react": "^16.0.38",
+    "@types/rimraf": "^2.0.2",
     "@types/yamljs": "^0.2.30",
     "electron": "^1.8.2",
+    "electron-builder": "^20.5.1",
     "electron-devtools-installer": "^2.2.3",
-    "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
     "tslint-react": "^3.5.1",
     "typescript": "^2.7.2",
@@ -37,6 +40,7 @@
   },
   "dependencies": {
     "@lonord/react-electron-components": "^1.0.11",
+    "asar": "^0.14.3",
     "debug": "^3.1.0",
     "electron-is-dev": "^0.3.0",
     "electron-unhandled": "^1.0.0",
@@ -47,7 +51,26 @@
     "npm": "^5.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "rimraf": "^2.6.2",
     "styled-components": "^3.1.6",
     "yamljs": "^0.3.0"
+  },
+  "build": {
+    "productName": "Pi Dashboard",
+    "files": [
+      "**/*",
+      "!dist/*",
+      "!src/*",
+      "!.vscode/*",
+      "!tsconfig.*",
+      "!tslint.json"
+    ],
+    "appId": "name.lonord.pi.dashboard",
+    "linux": {
+      "target": "deb"
+    },
+    "mac": {
+      "target": "dmg"
+    }
   }
 }

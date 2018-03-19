@@ -1,3 +1,5 @@
+import * as asar from 'asar'
+import * as isDev from 'electron-is-dev'
 import { EventEmitter } from 'events'
 import {
 	existsSync,
@@ -9,10 +11,12 @@ import {
 	writeFile,
 	writeFileSync
 } from 'fs'
+import { copySync } from 'fs-extra'
 import * as debounce from 'lodash.debounce'
 import * as mkdirp from 'mkdirp'
-import { homedir } from 'os'
+import { homedir, tmpdir } from 'os'
 import { join } from 'path'
+import * as rimraf from 'rimraf'
 import { promisify } from 'util'
 import * as YAML from 'yamljs'
 import npmInstall from './npm-installer'
@@ -26,20 +30,18 @@ const configDir = join(configHome, 'modules')
 const configFile = join(configHome, 'config.yml')
 const propertiesFile = join(configHome, 'properties.json')
 const nodeModuleDirectory = join(configDir, 'node_modules')
-const linkedModuleDirectory = join(configHome, 'node_modules')
+const targetNodeModuleDir = join(configHome, 'node_modules')
+const targetAppDir = join(configHome, 'app')
 const invalidModuleNameReg = /^\*\*(.*)\*\*$/
 
 const internalNodeModuleDir = join(__dirname, '../../node_modules')
 
 mkdirp.sync(configDir)
-if (existsSync(linkedModuleDirectory)) {
-	unlinkSync(linkedModuleDirectory)
-}
-symlinkSync(internalNodeModuleDir, linkedModuleDirectory)
 if (!existsSync(propertiesFile)) {
 	writeFileSync(propertiesFile, '{}', 'utf8')
 }
 initConfigFile(configFile)
+initInternalApp()
 
 let configObj = YAML.parse(readFileSync(configFile, 'utf8')) || {}
 if (!validConfigContent(configObj)) {
@@ -142,10 +144,36 @@ async function readProperties() {
 	}
 }
 
+function getHTMLIndexFile() {
+	return isDev ? join(__dirname, '../../index.html') : join(targetAppDir, 'index.html')
+}
+
 function initConfigFile(configFile: string) {
 	if (!existsSync(configFile)) {
 		const str = readFileSync(join(__dirname, '../../resource/config/default-module-config.yml'), 'utf8')
 		writeFileSync(configFile, str, 'utf8')
+	}
+}
+
+function initInternalApp() {
+	rimraf.sync(targetNodeModuleDir)
+	rimraf.sync(targetAppDir)
+	if (isDev) {
+		symlinkSync(internalNodeModuleDir, targetNodeModuleDir)
+	} else {
+		const tmpPath = join(tmpdir(), 'name.lonord.pi.dashboard')
+		rimraf.sync(tmpPath)
+		asar.extractAll(join(__dirname, '../../../app.asar'), tmpPath)
+		copySync(join(tmpPath, './node_modules'), targetNodeModuleDir, {
+			filter: (src, dest) => !src.startsWith(join(tmpPath, './node_modules/electron/'))
+		})
+
+		mkdirp.sync(targetAppDir)
+		mkdirp.sync(join(targetAppDir, 'lib'))
+		copySync(join(tmpPath, './resource'), join(targetAppDir, 'resource'))
+		copySync(join(tmpPath, './lib/renderer'), join(targetAppDir, 'lib/renderer'))
+		copySync(join(tmpPath, './index.html'), join(targetAppDir, 'index.html'))
+		rimraf.sync(tmpPath)
 	}
 }
 
@@ -169,5 +197,6 @@ export {
 	purgeListeners,
 	getNodeModulesDirectory,
 	writeProperties,
-	readProperties
+	readProperties,
+	getHTMLIndexFile
 }

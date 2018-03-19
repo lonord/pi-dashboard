@@ -1,7 +1,5 @@
-import createTsCompiler from '@lonord/electron-renderer-ts-compiler'
 import * as electron from 'electron'
 import { app, BrowserWindow } from 'electron'
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import * as isDev from 'electron-is-dev'
 import * as path from 'path'
 import * as url from 'url'
@@ -14,7 +12,6 @@ global['pi-dashboard-config'] = cfg
 // cfg.addListener('start-update', () => console.log('start-update'))
 // cfg.addListener('err', () => console.log('err'))
 
-const tsCompiler = createTsCompiler()
 let mainWindow: BrowserWindow
 
 function createWindow() {
@@ -31,13 +28,13 @@ function createWindow() {
 
 	// and load the index.html of the app.
 	mainWindow.loadURL(url.format({
-		pathname: path.join(__dirname, '../../index.html'),
+		pathname: cfg.getHTMLIndexFile(),
 		protocol: 'file:',
 		slashes: true
 	}))
 
 	// Open the DevTools.
-	// mainWindow.webContents.openDevTools()
+	mainWindow.webContents.openDevTools()
 
 	// Emitted when the window is closed.
 	mainWindow.on('closed', () => {
@@ -56,9 +53,13 @@ function clearConfigListeners() {
 app.on('ready', () => {
 	if (isDev) {
 		console.log('> electron is in dev mode')
-		installExtension(REACT_DEVELOPER_TOOLS)
+		const devToolInstaller = require('electron-devtools-installer')
+		const installExtension = devToolInstaller.default
+		installExtension(devToolInstaller.REACT_DEVELOPER_TOOLS)
 			.then((name) => console.log(`Added Extension:  ${name}`))
 			.catch((err) => console.log('An error occurred: ', err))
+		const createTsCompiler = require('@lonord/electron-renderer-ts-compiler').default
+		const tsCompiler = createTsCompiler()
 		const next = () => {
 			clearConfigListeners()
 			tsCompiler(createWindow, () => {
