@@ -33,3 +33,9 @@ export const configUtil = remote.getGlobal('pi-dashboard-config') as ConfigUtil
 window.addEventListener('unload', () => {
 	configUtil.purgeListeners()
 })
+
+export interface MainProcActions {
+	update()
+}
+
+export const mainProcActions = remote.getGlobal('main-action') as MainProcActions

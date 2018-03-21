@@ -7,6 +7,14 @@ export default function clearModule(path: string) {
 		}
 	}
 	for (const name of namesToDelete) {
+		const m = require.cache[name]
+		for (let i = 0; i < m.parent.children.length; i++) {
+			const cm = m.parent.children[i]
+			if (cm.filename === name) {
+				m.parent.children.splice(i, 1)
+				break
+			}
+		}
 		delete require.cache[name]
 	}
 }

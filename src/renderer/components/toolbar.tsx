@@ -10,7 +10,7 @@ import {
 import * as React from 'react'
 import styled from 'styled-components'
 import formatHTMLText from '../util/react-html-formatter'
-import { configUtil } from '../util/remote'
+import { configUtil, mainProcActions } from '../util/remote'
 import Button from './button'
 import AboutDialog from './dialog/about'
 import ExitDialog from './dialog/exit'
@@ -145,6 +145,8 @@ class MoreMenu extends React.Component<any, any> {
 		return (
 			<MoreMenuWrap>
 				<MenuItem onClick={() => aboutPortal.show()}>关于</MenuItem>
+				<Separate />
+				<MenuItem onClick={() => mainProcActions.update()}>检查更新</MenuItem>
 				<Separate />
 				<MenuItem onClick={() => exitPortal.show()}>退出</MenuItem>
 			</MoreMenuWrap>

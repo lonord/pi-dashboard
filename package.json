@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@lonord.name:/~/pi-dashboard.git"
+    "url": "git+https://github.com/lonord/pi-dashboard.git"
   },
   "keywords": [
     "dashboard",
@@ -44,6 +44,7 @@
     "debug": "^3.1.0",
     "electron-is-dev": "^0.3.0",
     "electron-unhandled": "^1.0.0",
+    "electron-updater": "^2.21.1",
     "fecha": "^2.3.3",
     "fs-extra": "^5.0.0",
     "lodash.debounce": "^4.0.8",
@@ -69,8 +70,9 @@
     "linux": {
       "target": "deb"
     },
-    "mac": {
-      "target": "dmg"
+    "publish": {
+      "provider": "generic",
+      "url": "http://pi3.local/electron-update/pi-dashboard/"
     }
   }
 }

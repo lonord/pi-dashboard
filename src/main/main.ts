@@ -1,12 +1,17 @@
 import * as electron from 'electron'
 import { app, BrowserWindow } from 'electron'
 import * as isDev from 'electron-is-dev'
+import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import * as url from 'url'
 import * as cfg from './config'
 
 // tslint:disable-next-line:no-string-literal
 global['pi-dashboard-config'] = cfg
+// tslint:disable-next-line:no-string-literal
+global['main-action'] = {
+	update: () => autoUpdater.checkForUpdatesAndNotify()
+}
 
 // cfg.addListener('updated', () => console.log('updated'))
 // cfg.addListener('start-update', () => console.log('start-update'))
@@ -34,7 +39,7 @@ function createWindow() {
 	}))
 
 	// Open the DevTools.
-	mainWindow.webContents.openDevTools()
+	// mainWindow.webContents.openDevTools()
 
 	// Emitted when the window is closed.
 	mainWindow.on('closed', () => {
