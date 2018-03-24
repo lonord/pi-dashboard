@@ -8,7 +8,8 @@
     "clean": "rimraf lib/",
     "dev": "electron .",
     "build": "npm run clean && tsc -p tsconfig.renderer.json && tsc -p tsconfig.main.json",
-    "dist": "npm run build && rimraf dist/ && electron-builder --mac --linux --armv7l deb"
+    "upload": "./scripts/upload.sh",
+    "dist": "npm run build && rimraf dist/ && electron-builder --mac --linux --armv7l && npm run upload"
   },
   "repository": {
     "type": "git",
@@ -23,13 +24,14 @@
   "license": "MIT",
   "devDependencies": {
     "@lonord/electron-renderer-ts-compiler": "^1.1.4",
+    "@types/bluebird": "^3.5.20",
     "@types/debug": "0.0.30",
     "@types/fs-extra": "^5.0.1",
     "@types/mkdirp": "^0.5.2",
     "@types/react": "^16.0.38",
     "@types/rimraf": "^2.0.2",
     "@types/yamljs": "^0.2.30",
-    "electron": "^1.8.2",
+    "electron": "1.7.9",
     "electron-builder": "^20.5.1",
     "electron-devtools-installer": "^2.2.3",
     "tslint": "^5.9.1",
@@ -41,6 +43,7 @@
   "dependencies": {
     "@lonord/react-electron-components": "^1.0.11",
     "asar": "^0.14.3",
+    "bluebird": "^3.5.1",
     "debug": "^3.1.0",
     "electron-is-dev": "^0.3.0",
     "electron-unhandled": "^1.0.0",
@@ -64,11 +67,12 @@
       "!src/*",
       "!.vscode/*",
       "!tsconfig.*",
-      "!tslint.json"
+      "!tslint.json",
+      "!scripts/*"
     ],
     "appId": "name.lonord.pi.dashboard",
     "linux": {
-      "target": "deb"
+      "target": "AppImage"
     },
     "publish": {
       "provider": "generic",

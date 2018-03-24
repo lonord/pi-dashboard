@@ -1,13 +1,13 @@
+import * as bluebird from 'bluebird'
 import { ChildProcess, fork } from 'child_process'
 import * as debug from 'debug'
 import { writeFile } from 'fs'
 import * as fse from 'fs-extra'
 import { join } from 'path'
-import { promisify } from 'util'
 
 const log = debug('pi-dashboard:npm-installer')
 
-const writeFileAsync = promisify(writeFile)
+const writeFileAsync = bluebird.promisify<any, string, string, string>(writeFile)
 
 let installProcess: ChildProcess = null
 

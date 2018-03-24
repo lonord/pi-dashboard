@@ -8,4 +8,8 @@ globalConfig:
 componentModules:
 # item must contains `name` property, 
 # the rest properties are configuration key-value pairs merging to global config
-  - { _name: '**YOUR_MODULE_NAME**', _tag: '*', customConfig1: 'config1', customConfig2: 'config2' }
+  -
+    _name: '**YOUR_MODULE_NAME**'
+    _tag: '*'
+    customConfig1: 'config1'
+    customConfig2: 'config2'

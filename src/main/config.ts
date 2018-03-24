@@ -1,8 +1,10 @@
 import * as asar from 'asar'
+import * as bluebird from 'bluebird'
 import * as isDev from 'electron-is-dev'
 import { EventEmitter } from 'events'
 import {
 	existsSync,
+	FSWatcher,
 	readFile,
 	readFileSync,
 	symlinkSync,
@@ -17,12 +19,11 @@ import * as mkdirp from 'mkdirp'
 import { homedir, tmpdir } from 'os'
 import { join } from 'path'
 import * as rimraf from 'rimraf'
-import { promisify } from 'util'
 import * as YAML from 'yamljs'
 import npmInstall from './npm-installer'
 
-const readFileAsync = promisify(readFile)
-const writeFileAsync = promisify(writeFile)
+const readFileAsync = bluebird.promisify<any, string, string>(readFile)
+const writeFileAsync = bluebird.promisify<any, string, string, string>(writeFile)
 
 const emitter = new EventEmitter()
 const configHome = join(homedir(), '.pi-dashboard')
@@ -48,13 +49,24 @@ if (!validConfigContent(configObj)) {
 	throw new Error('configuration file format error')
 }
 
-watch(configFile, debounce(update, 1000))
+let watcher: FSWatcher = null
+const watchConfigFile = () => {
+	if (watcher != null) {
+		watcher.close()
+	}
+	watcher = watch(configFile, debounce(update, 1000))
+}
+
+watchConfigFile()
 
 function update() {
+	console.log('config file changed')
+	watchConfigFile()
 	readFileAsync(configFile, 'utf8').catch((err) => {
 		return Promise.reject('配置文件读取失败')
 	}).then((content) => {
 		emitter.emit('start-update')
+		console.log('start update modules')
 		const newConfigObj = YAML.parse(content)
 		if (validConfigContent(newConfigObj)) {
 			const componentModules = newConfigObj.componentModules || []
@@ -78,9 +90,11 @@ function update() {
 		if (newConfigObj) {
 			configObj = newConfigObj
 			emitter.emit('updated', getConfig())
+			console.log('update succeed')
 		}
 	}).catch((msg) => {
 		emitter.emit('err', msg)
+		console.error('update failed', msg)
 	})
 }
 
