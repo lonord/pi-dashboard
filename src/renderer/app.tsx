@@ -37,7 +37,7 @@ export default () => (
 	<Main>
 		<Header>
 			<Logo />
-			<DateTime />
+			{/* <DateTime /> */}
 			<Toolbar />
 		</Header>
 		<Content>
