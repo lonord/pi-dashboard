@@ -4,22 +4,17 @@ import * as isDev from 'electron-is-dev'
 import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import * as url from 'url'
-import * as cfg from './config'
+import createConfigManager, { ConfigManager } from './config'
 
-// tslint:disable-next-line:no-string-literal
-global['pi-dashboard-config'] = cfg
 // tslint:disable-next-line:no-string-literal
 global['main-action'] = {
 	update: () => autoUpdater.checkForUpdatesAndNotify()
 }
 
-// cfg.addListener('updated', () => console.log('updated'))
-// cfg.addListener('start-update', () => console.log('start-update'))
-// cfg.addListener('err', () => console.log('err'))
-
 let mainWindow: BrowserWindow
+let slashWindow: BrowserWindow
 
-function createWindow() {
+function createWindow(cfg: ConfigManager) {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
 		width: 800,
@@ -46,16 +41,48 @@ function createWindow() {
 		// Dereference the window object, usually you would store windows
 		// in an array if your app supports multi windows, this is the time
 		// when you should delete the corresponding element.
-		clearConfigListeners()
+		clearConfigListeners(cfg)
 		mainWindow = null
 	})
+
+	if (process.env.PI_DASHBOARD_KIOSK) {
+		mainWindow.setKiosk(true)
+	}
+
+	if (slashWindow) {
+		slashWindow.close()
+		slashWindow = null
+	}
 }
 
-function clearConfigListeners() {
+function createSlashWindow() {
+	slashWindow = new BrowserWindow({
+		width: 218,
+		height: 100,
+		resizable: false,
+
+		title: 'Pi Dashboard Loading...',
+		frame: false
+	})
+
+	// and load the index.html of the app.
+	slashWindow.loadURL(url.format({
+		pathname: path.join(__dirname, '../../slash.html'),
+		protocol: 'file:',
+		slashes: true
+	}))
+}
+
+function clearConfigListeners(cfg: ConfigManager) {
 	cfg.purgeListeners()
 }
 
 app.on('ready', () => {
+	createSlashWindow()
+
+	const cfg = createConfigManager()
+	// tslint:disable-next-line:no-string-literal
+	global['pi-dashboard-config'] = cfg
 	if (isDev) {
 		console.log('> electron is in dev mode')
 		const devToolInstaller = require('electron-devtools-installer')
@@ -66,8 +93,8 @@ app.on('ready', () => {
 		const createTsCompiler = require('@lonord/electron-renderer-ts-compiler').default
 		const tsCompiler = createTsCompiler()
 		const next = () => {
-			clearConfigListeners()
-			tsCompiler(createWindow, () => {
+			clearConfigListeners(cfg)
+			tsCompiler(() => createWindow(cfg), () => {
 				if (mainWindow) {
 					mainWindow.reload()
 				}
@@ -77,7 +104,7 @@ app.on('ready', () => {
 		cfg.addListener('err', next)
 		cfg.trigUpdate()
 	} else {
-		createWindow()
+		createWindow(cfg)
 	}
 })
 
