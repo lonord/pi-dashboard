@@ -14,6 +14,7 @@ import { configUtil, mainProcActions } from '../util/remote'
 import Button from './button'
 import AboutDialog from './dialog/about'
 import ExitDialog from './dialog/exit'
+import UpdateDialog from './dialog/update'
 
 const ToolbarIconButton = styled(IconButton) `
 	height: 40px;
@@ -140,13 +141,16 @@ const AboutDockComp = aboutPortal.DockComp
 const exitPortal = createPortalDock(ExitDialog)
 const ExitDockComp = exitPortal.DockComp
 
+const updateProtal = createPortalDock(UpdateDialog)
+const UpdateDockComp = updateProtal.DockComp
+
 class MoreMenu extends React.Component<any, any> {
 	render() {
 		return (
 			<MoreMenuWrap>
 				<MenuItem onClick={() => aboutPortal.show()}>关于</MenuItem>
 				<Separate />
-				<MenuItem onClick={() => mainProcActions.update()}>检查更新</MenuItem>
+				<MenuItem onClick={() => updateProtal.show()}>检查更新</MenuItem>
 				<Separate />
 				<MenuItem onClick={() => exitPortal.show()}>退出</MenuItem>
 			</MoreMenuWrap>
@@ -164,5 +168,6 @@ export default () => (
 		<MoreMenuButton icon="ellipsis-v" />
 		<AboutDockComp />
 		<ExitDockComp />
+		<UpdateDockComp />
 	</FlexItemFix>
 )

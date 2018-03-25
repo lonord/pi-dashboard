@@ -35,7 +35,8 @@ window.addEventListener('unload', () => {
 })
 
 export interface MainProcActions {
-	update()
+	checkUpdate(fn: (err: any, updateAvailable: boolean) => void)
+	downloadAndInstallUpdate(fn: (err: any) => void)
 }
 
 export const mainProcActions = remote.getGlobal('main-action') as MainProcActions
