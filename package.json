@@ -1,6 +1,6 @@
 {
   "name": "pi-dashboard",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Dashboard powered by electron designed for raspberry pi",
   "homepage": "https://github.com/lonord/pi-dashboard",
   "main": "lib/main/index.js",

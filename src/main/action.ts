@@ -10,14 +10,25 @@ export default function createActionManager() {
 			autoUpdater.checkForUpdates()
 		},
 		downloadAndInstallUpdate: (fn: (err: any) => void) => {
+			let errorEmitted = false
+			const emitError = (err) => {
+				if (errorEmitted) {
+					return
+				}
+				fn(err)
+				errorEmitted = true
+			}
 			autoUpdater.once('update-downloaded', () => {
 				try {
 					autoUpdater.quitAndInstall()
 				} catch (e) {
 					console.error(e)
+					emitError(e)
 				}
 			})
-			autoUpdater.once('error', (err) => fn(err))
+			autoUpdater.once('error', (err) => {
+				emitError(err)
+			})
 			autoUpdater.downloadUpdate()
 		}
 	}
