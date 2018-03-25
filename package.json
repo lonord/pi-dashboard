@@ -1,6 +1,6 @@
 {
   "name": "pi-dashboard",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Dashboard powered by electron designed for raspberry pi",
   "homepage": "https://github.com/lonord/pi-dashboard",
   "main": "lib/main/index.js",
@@ -9,7 +9,8 @@
     "dev": "electron .",
     "build": "npm run clean && tsc -p tsconfig.renderer.json && tsc -p tsconfig.main.json",
     "upload": "./scripts/upload.sh",
-    "dist": "npm run build && rimraf dist/ && electron-builder --mac --linux --armv7l && npm run upload"
+    "pack": "npm run build && rimraf dist/ && electron-builder --mac --linux --armv7l",
+    "dist": "npm run pack && npm run upload"
   },
   "repository": {
     "type": "git",
@@ -72,7 +73,8 @@
     ],
     "appId": "name.lonord.pi.dashboard",
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "category": "Utility"
     },
     "publish": {
       "provider": "generic",

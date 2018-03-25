@@ -1,8 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import styled, { injectGlobal } from 'styled-components'
-import App from './app'
 import Logo from './components/logo'
+import { slashUtil } from './util/remote-slash'
 
 injectGlobal`
 	* {
@@ -44,8 +44,27 @@ const SlashScreen = () => (
 	<Wrap>
 		<Logo />
 		<Loading>正在启动...</Loading>
+		<LoadStub/>
 	</Wrap>
 )
+
+let loaded = false
+
+class LoadStub extends React.Component<any, any> {
+
+	componentDidMount() {
+		if (!loaded) {
+			loaded = true
+			setTimeout(() => {
+				slashUtil.notifyLoadComplete()
+			}, 1)
+		}
+	}
+
+	render() {
+		return null
+	}
+}
 
 ReactDOM.render(
 	<SlashScreen />,

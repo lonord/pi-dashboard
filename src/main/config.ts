@@ -13,7 +13,7 @@ import {
 	writeFile,
 	writeFileSync
 } from 'fs'
-import { copySync } from 'fs-extra'
+import { moveSync } from 'fs-extra'
 import * as debounce from 'lodash.debounce'
 import * as mkdirp from 'mkdirp'
 import { homedir, tmpdir } from 'os'
@@ -195,15 +195,15 @@ export default function createConfigManager(): ConfigManager {
 			const tmpPath = join(tmpdir(), 'name.lonord.pi.dashboard')
 			rimraf.sync(tmpPath)
 			asar.extractAll(join(__dirname, '../../../app.asar'), tmpPath)
-			copySync(join(tmpPath, './node_modules'), targetNodeModuleDir, {
-				filter: (src, dest) => !src.startsWith(join(tmpPath, './node_modules/electron/'))
-			})
+			rimraf.sync(join(tmpPath, './node_modules/electron'))
+			rimraf.sync(join(tmpPath, './resource/config'))
+			moveSync(join(tmpPath, './node_modules'), targetNodeModuleDir)
 
 			mkdirp.sync(targetAppDir)
 			mkdirp.sync(join(targetAppDir, 'lib'))
-			copySync(join(tmpPath, './resource'), join(targetAppDir, 'resource'))
-			copySync(join(tmpPath, './lib/renderer'), join(targetAppDir, 'lib/renderer'))
-			copySync(join(tmpPath, './index.html'), join(targetAppDir, 'index.html'))
+			moveSync(join(tmpPath, './resource'), join(targetAppDir, 'resource'))
+			moveSync(join(tmpPath, './lib/renderer'), join(targetAppDir, 'lib/renderer'))
+			moveSync(join(tmpPath, './index.html'), join(targetAppDir, 'index.html'))
 			rimraf.sync(tmpPath)
 		}
 	}

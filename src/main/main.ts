@@ -55,13 +55,20 @@ function createWindow(cfg: ConfigManager) {
 	}
 }
 
-function createSlashWindow() {
+function createSlashWindow(onShow: () => void) {
+
+	global['pi-dashboard-slash'] = {
+		notifyLoadComplete: () => {
+			setTimeout(onShow, 100)
+		}
+	}
+
 	slashWindow = new BrowserWindow({
 		width: 218,
 		height: 100,
 		resizable: false,
 
-		title: 'Pi Dashboard Loading...',
+		title: 'Loading...',
 		frame: false
 	})
 
@@ -78,34 +85,34 @@ function clearConfigListeners(cfg: ConfigManager) {
 }
 
 app.on('ready', () => {
-	createSlashWindow()
-
-	const cfg = createConfigManager()
-	// tslint:disable-next-line:no-string-literal
-	global['pi-dashboard-config'] = cfg
-	if (isDev) {
-		console.log('> electron is in dev mode')
-		const devToolInstaller = require('electron-devtools-installer')
-		const installExtension = devToolInstaller.default
-		installExtension(devToolInstaller.REACT_DEVELOPER_TOOLS)
-			.then((name) => console.log(`Added Extension:  ${name}`))
-			.catch((err) => console.log('An error occurred: ', err))
-		const createTsCompiler = require('@lonord/electron-renderer-ts-compiler').default
-		const tsCompiler = createTsCompiler()
-		const next = () => {
-			clearConfigListeners(cfg)
-			tsCompiler(() => createWindow(cfg), () => {
-				if (mainWindow) {
-					mainWindow.reload()
-				}
-			})
+	createSlashWindow(() => {
+		const cfg = createConfigManager()
+		// tslint:disable-next-line:no-string-literal
+		global['pi-dashboard-config'] = cfg
+		if (isDev) {
+			console.log('> electron is in dev mode')
+			const devToolInstaller = require('electron-devtools-installer')
+			const installExtension = devToolInstaller.default
+			installExtension(devToolInstaller.REACT_DEVELOPER_TOOLS)
+				.then((name) => console.log(`Added Extension:  ${name}`))
+				.catch((err) => console.log('An error occurred: ', err))
+			const createTsCompiler = require('@lonord/electron-renderer-ts-compiler').default
+			const tsCompiler = createTsCompiler()
+			const next = () => {
+				clearConfigListeners(cfg)
+				tsCompiler(() => createWindow(cfg), () => {
+					if (mainWindow) {
+						mainWindow.reload()
+					}
+				})
+			}
+			cfg.addListener('updated', next)
+			cfg.addListener('err', next)
+			cfg.trigUpdate()
+		} else {
+			createWindow(cfg)
 		}
-		cfg.addListener('updated', next)
-		cfg.addListener('err', next)
-		cfg.trigUpdate()
-	} else {
-		createWindow(cfg)
-	}
+	})
 })
 
 // Quit when all windows are closed.
