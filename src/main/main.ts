@@ -1,14 +1,17 @@
 import * as electron from 'electron'
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, dialog } from 'electron'
 import * as isDev from 'electron-is-dev'
 import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import * as url from 'url'
+import createActionManager from './action'
 import createConfigManager, { ConfigManager } from './config'
+
+const actions = createActionManager()
 
 // tslint:disable-next-line:no-string-literal
 global['main-action'] = {
-	update: () => autoUpdater.checkForUpdatesAndNotify()
+	update: () => actions.checkUpdate(updateCheckCallback)
 }
 
 let mainWindow: BrowserWindow
@@ -82,6 +85,33 @@ function createSlashWindow(onShow: () => void) {
 
 function clearConfigListeners(cfg: ConfigManager) {
 	cfg.purgeListeners()
+}
+
+function updateCheckCallback(err: any, updateAvailable: boolean) {
+	if (err) {
+		showError(err)
+	} else {
+		if (updateAvailable) {
+			dialog.showMessageBox(mainWindow, {
+				title: '发现新版本',
+				message: '是否立刻下载并安装？',
+				buttons: [ '取消', '安装' ]
+			}, (response) => {
+				if (response === 1) {
+					actions.downloadAndInstallUpdate(showError)
+				}
+			})
+		} else {
+			dialog.showMessageBox(mainWindow, {
+				message: '未发现新版本',
+				buttons: [ '确定' ]
+			})
+		}
+	}
+}
+
+function showError(err: any) {
+	dialog.showErrorBox(err.message || '发生错误', (err.stack || err).toString())
 }
 
 app.on('ready', () => {
