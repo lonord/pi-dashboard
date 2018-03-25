@@ -33,6 +33,7 @@ export interface ConfigManager {
 	removeListener(event: 'start-update', fn: () => void)
 	removeListener(event: 'err', fn: (msg: string) => void)
 	getConfig(): any
+	getSystemConfig(): any
 	trigUpdate()
 	getNodeModulesDirectory(): string
 	writeProperties(props: any): Promise<void>
@@ -145,6 +146,10 @@ export default function createConfigManager(): ConfigManager {
 		return obj
 	}
 
+	function getSystemConfig() {
+		return configObj.systemConfig || {}
+	}
+
 	function trigUpdate() {
 		update()
 	}
@@ -224,6 +229,7 @@ export default function createConfigManager(): ConfigManager {
 		addListener,
 		removeListener,
 		getConfig,
+		getSystemConfig,
 		trigUpdate,
 		purgeListeners,
 		getNodeModulesDirectory,

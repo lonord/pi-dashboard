@@ -48,7 +48,7 @@ function createWindow(cfg: ConfigManager) {
 		mainWindow = null
 	})
 
-	if (process.env.PI_DASHBOARD_KIOSK) {
+	if (cfg.getSystemConfig().kiosk) {
 		mainWindow.setKiosk(true)
 	}
 

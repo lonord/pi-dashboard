@@ -1,5 +1,9 @@
 # Pi dashboard configuration
 
+# system configuration
+systemConfig:
+  kiosk: false
+
 # global configuration, contains key-value pairs
 globalConfig:
   rpcBaseUrl: 'http://your-router-rpc-url'
