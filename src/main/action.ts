@@ -11,7 +11,11 @@ export default function createActionManager() {
 		},
 		downloadAndInstallUpdate: (fn: (err: any) => void) => {
 			autoUpdater.once('update-downloaded', () => {
-				autoUpdater.quitAndInstall()
+				try {
+					autoUpdater.quitAndInstall()
+				} catch (e) {
+					console.error(e)
+				}
 			})
 			autoUpdater.once('error', (err) => fn(err))
 			autoUpdater.downloadUpdate()

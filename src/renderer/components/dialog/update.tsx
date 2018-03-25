@@ -41,7 +41,7 @@ export default class UpdateDialog extends React.Component<DialogProps, UpdateDia
 				})
 			} else {
 				this.setState({
-					status: 'avaliable'
+					status: updateAvailable ? 'avaliable' : 'not-avaliable'
 				})
 			}
 		})
@@ -66,7 +66,7 @@ export default class UpdateDialog extends React.Component<DialogProps, UpdateDia
 			)
 		} else if (status === 'downloading') {
 			child = (
-				<span>正在下载更新文件...</span>
+				<span>正在更新...</span>
 			)
 		} else if (status === 'avaliable') {
 			child = (
